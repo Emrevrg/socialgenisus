@@ -1,5 +1,5 @@
 import React from 'react';
-import { AspectRatio, ImageSize } from '../types';
+import { AspectRatio, ImageSize, Language } from '../types';
 import { Settings, X } from 'lucide-react';
 
 interface SettingsPanelProps {
@@ -9,6 +9,7 @@ interface SettingsPanelProps {
   setImageSize: (size: ImageSize) => void;
   aspectRatio: AspectRatio;
   setAspectRatio: (ratio: AspectRatio) => void;
+  language: Language;
 }
 
 export const SettingsPanel: React.FC<SettingsPanelProps> = ({
@@ -17,9 +18,31 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
   imageSize,
   setImageSize,
   aspectRatio,
-  setAspectRatio
+  setAspectRatio,
+  language
 }) => {
   if (!isOpen) return null;
+
+  const t = {
+    [Language.ENGLISH]: {
+        title: "Generation Settings",
+        resolution: "Image Resolution (Gemini 3 Pro)",
+        resolutionDesc: "Higher resolutions may take longer to generate.",
+        ratio: "Aspect Ratio Preference",
+        ratioDesc: "\"Auto\" selects the optimal ratio for each platform automatically.",
+        done: "Done"
+    },
+    [Language.TURKISH]: {
+        title: "Oluşturma Ayarları",
+        resolution: "Görsel Çözünürlüğü (Gemini 3 Pro)",
+        resolutionDesc: "Yüksek çözünürlüklerin oluşturulması daha uzun sürebilir.",
+        ratio: "En Boy Oranı Tercihi",
+        ratioDesc: "\"Otomatik\" her platform için en uygun oranı otomatik olarak seçer.",
+        done: "Tamam"
+    }
+  };
+
+  const strings = t[language];
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
@@ -27,7 +50,7 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
         <div className="flex justify-between items-center mb-6">
           <div className="flex items-center gap-2 text-indigo-400">
             <Settings size={20} />
-            <h2 className="text-xl font-bold text-white">Generation Settings</h2>
+            <h2 className="text-xl font-bold text-white">{strings.title}</h2>
           </div>
           <button onClick={onClose} className="text-slate-400 hover:text-white transition-colors">
             <X size={24} />
@@ -38,7 +61,7 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
           {/* Image Size */}
           <div>
             <label className="block text-sm font-medium text-slate-300 mb-3">
-              Image Resolution (Gemini 3 Pro)
+              {strings.resolution}
             </label>
             <div className="grid grid-cols-3 gap-2">
               {Object.values(ImageSize).map((size) => (
@@ -56,14 +79,14 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
               ))}
             </div>
             <p className="text-xs text-slate-500 mt-2">
-              Higher resolutions may take longer to generate.
+              {strings.resolutionDesc}
             </p>
           </div>
 
           {/* Aspect Ratio */}
           <div>
             <label className="block text-sm font-medium text-slate-300 mb-3">
-              Aspect Ratio Preference
+              {strings.ratio}
             </label>
             <div className="grid grid-cols-3 gap-2">
               {Object.values(AspectRatio).map((ratio) => (
@@ -76,12 +99,12 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
                       : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
                   }`}
                 >
-                  {ratio}
+                  {ratio === AspectRatio.AUTO && language === Language.TURKISH ? 'Otomatik' : ratio}
                 </button>
               ))}
             </div>
             <p className="text-xs text-slate-500 mt-2">
-              "Auto" selects the optimal ratio for each platform automatically.
+              {strings.ratioDesc}
             </p>
           </div>
         </div>
@@ -91,7 +114,7 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
             onClick={onClose}
             className="px-6 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg font-medium transition-colors"
           >
-            Done
+            {strings.done}
           </button>
         </div>
       </div>

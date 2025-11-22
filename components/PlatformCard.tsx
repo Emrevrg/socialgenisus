@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { GeneratedContent, Platform } from '../types';
+import { GeneratedContent, Platform, Language } from '../types';
 import { Copy, Download, RefreshCw, Loader2, Twitter, Linkedin, Instagram, Image as ImageIcon } from 'lucide-react';
 
 interface PlatformCardProps {
   content: GeneratedContent;
   onRegenerateImage: (platform: Platform) => void;
+  language: Language;
 }
 
 const getPlatformIcon = (platform: Platform) => {
@@ -23,8 +24,31 @@ const getPlatformColor = (platform: Platform) => {
     }
 }
 
-export const PlatformCard: React.FC<PlatformCardProps> = ({ content, onRegenerateImage }) => {
+export const PlatformCard: React.FC<PlatformCardProps> = ({ content, onRegenerateImage, language }) => {
   const [copied, setCopied] = useState(false);
+
+  const t = {
+    [Language.ENGLISH]: {
+      copy: "Copy Text",
+      copied: "Copied!",
+      generating: "Generating High-Res Image...",
+      failed: "Image generation failed",
+      download: "Download Image",
+      regenerate: "Regenerate Image",
+      prompt: "Prompt"
+    },
+    [Language.TURKISH]: {
+      copy: "Metni Kopyala",
+      copied: "Kopyalandı!",
+      generating: "Yüksek Çözünürlüklü Görsel Oluşturuluyor...",
+      failed: "Görsel oluşturulamadı",
+      download: "Görseli İndir",
+      regenerate: "Görseli Yenile",
+      prompt: "İstem"
+    }
+  };
+
+  const strings = t[language];
 
   const handleCopy = () => {
     navigator.clipboard.writeText(content.text);
@@ -54,7 +78,7 @@ export const PlatformCard: React.FC<PlatformCardProps> = ({ content, onRegenerat
           onClick={handleCopy}
           className="text-xs flex items-center gap-1 bg-slate-800 hover:bg-slate-700 px-2 py-1 rounded-md transition-colors text-slate-300"
         >
-          {copied ? "Copied!" : <><Copy size={14} /> Copy Text</>}
+          {copied ? strings.copied : <><Copy size={14} /> {strings.copy}</>}
         </button>
       </div>
 
@@ -72,7 +96,7 @@ export const PlatformCard: React.FC<PlatformCardProps> = ({ content, onRegenerat
           {content.isImageLoading ? (
             <div className="flex flex-col items-center gap-2 text-indigo-400 animate-pulse">
               <Loader2 size={32} className="animate-spin" />
-              <span className="text-xs font-medium">Generating High-Res Image...</span>
+              <span className="text-xs font-medium text-center px-4">{strings.generating}</span>
             </div>
           ) : content.imageUrl ? (
             <div className="relative w-full h-full group/image">
@@ -86,7 +110,7 @@ export const PlatformCard: React.FC<PlatformCardProps> = ({ content, onRegenerat
                  <button 
                     onClick={handleDownload}
                     className="p-2 bg-white/10 hover:bg-white/20 rounded-full text-white backdrop-blur-md transition-all transform hover:scale-110"
-                    title="Download Image"
+                    title={strings.download}
                  >
                     <Download size={20} />
                  </button>
@@ -95,7 +119,7 @@ export const PlatformCard: React.FC<PlatformCardProps> = ({ content, onRegenerat
           ) : (
              <div className="flex flex-col items-center text-slate-500 gap-2">
                 <ImageIcon size={32} />
-                <span className="text-xs">Image generation failed</span>
+                <span className="text-xs">{strings.failed}</span>
              </div>
           )}
 
@@ -104,7 +128,7 @@ export const PlatformCard: React.FC<PlatformCardProps> = ({ content, onRegenerat
              <button
                onClick={() => onRegenerateImage(content.platform)}
                className="absolute top-2 right-2 p-1.5 bg-black/50 hover:bg-indigo-600 text-white rounded-full backdrop-blur-md transition-all opacity-0 group-hover:opacity-100"
-               title="Regenerate Image"
+               title={strings.regenerate}
              >
                <RefreshCw size={14} />
              </button>
@@ -112,7 +136,7 @@ export const PlatformCard: React.FC<PlatformCardProps> = ({ content, onRegenerat
         </div>
         
         <div className="text-[10px] text-slate-500 truncate">
-            Prompt: {content.imagePrompt}
+            {strings.prompt}: {content.imagePrompt}
         </div>
       </div>
     </div>

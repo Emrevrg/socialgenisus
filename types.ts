@@ -4,6 +4,11 @@ export enum Platform {
   INSTAGRAM = 'Instagram'
 }
 
+export enum Language {
+  ENGLISH = 'English',
+  TURKISH = 'Turkish'
+}
+
 export enum Tone {
   PROFESSIONAL = 'Professional',
   WITTY = 'Witty',

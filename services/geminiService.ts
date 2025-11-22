@@ -1,5 +1,5 @@
 import { GoogleGenAI, Type } from "@google/genai";
-import { TextModelResponse, ImageSize, AspectRatio, Platform } from "../types";
+import { TextModelResponse, ImageSize, AspectRatio, Platform, Language } from "../types";
 
 // Helper to get the client. Note: We create a new instance every call 
 // to ensure we pick up the latest API key if it changed.
@@ -26,7 +26,8 @@ export const requestApiKey = async (): Promise<void> => {
 
 export const generateSocialText = async (
   topic: string,
-  tone: string
+  tone: string,
+  language: Language
 ): Promise<TextModelResponse> => {
   const ai = getAiClient();
   
@@ -38,13 +39,18 @@ export const generateSocialText = async (
     You are a world-class social media manager. 
     Topic: "${topic}"
     Tone: "${tone}"
+    Target Language: "${language}"
     
-    Generate 3 distinct social media posts:
+    Generate 3 distinct social media posts in ${language}:
     1. LinkedIn: Long-form, professional yet engaging, uses line breaks.
     2. Twitter/X: Short, punchy, under 280 chars, maybe 1-2 hashtags.
     3. Instagram: Visual-focused caption, engaging hook, 10-15 relevant hashtags at the bottom.
 
+    IMPORTANT: The text content of the posts MUST be in ${language}.
+
     Also provide a detailed image generation prompt for each that would suit the platform's aesthetic.
+    IMPORTANT: The image prompts must be in English to ensure the best image generation quality.
+
     - LinkedIn image: Professional, clean, infographic or office style.
     - Twitter image: Eye-catching, bold, meme-style or high contrast.
     - Instagram image: Aesthetic, lifestyle, high-quality photography style.
