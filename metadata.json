@@ -1,0 +1,5 @@
+{
+  "name": "SocialGenius AI",
+  "description": "A cross-platform social media content generator that crafts tailored posts and images for LinkedIn, Twitter/X, and Instagram simultaneously using Gemini 3 Pro and Flash.",
+  "requestFramePermissions": []
+}
